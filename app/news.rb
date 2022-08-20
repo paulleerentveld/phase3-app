@@ -3,14 +3,17 @@ require 'json'
 
 class News
 
-    attr_accessor :name, :body
+    attr_accessor :name, :body, :url, :author
 
     @@all = []
 
-    def initialize(name, body)
+    def initialize(name, body, url, author)
 
         @name = name
         @body = body
+        @url = url
+        @author = author
+        
         #@@all << self
 
     end
@@ -24,7 +27,7 @@ class News
         response = request.read
         parsed = JSON(response)
         parsed['articles'].each.with_index(1) do |article, index|
-            index = News.new(article['title'], article['description'])
+            index = News.new(article['title'], article['description'], article['url'], article['author'])
             @@all << index
         end
 
@@ -37,7 +40,7 @@ class News
     end
 
     def saveArticle
-        Article.create(:name => self.name, :body => self.body)
+        Article.create(:name => self.name, :body => self.body, :url => self.url, :author => self.author)
     end
     
 
