@@ -19,9 +19,10 @@ class Cli
             elsif input == '3'
                 return
             else
-                puts "Do you want to continue(y/n)"
+                puts "You entered an invalid command, Do you want to continue(y/n)"
                 continue = gets.strip
             end
+            
         end
     end
 
@@ -34,29 +35,33 @@ class Cli
             puts "=========================================================================================="
             puts "Select a News article to view details"
             input = gets.strip
-            if input.to_i <= News.List.count 
+            if input.to_i == 0
+                "Please select a valid article number"
+            elsif input.to_i <= News.List.count
                 viewarticle = 'y'
                 while viewarticle == 'y'
-                    puts "Title:" + News.All[input.to_i].name
-                    puts "Body:" + News.All[input.to_i].body
-                    puts "URL:" + News.All[input.to_i].url
-                    puts "Author:" + News.All[input.to_i].author
+                    articleid = input.to_i - 1
+                    puts "=========================================================================================="
+                    puts "Title:" + News.All[articleid].name
+                    puts "Body:" + News.All[articleid].body
+                    puts "URL:" + News.All[articleid].url
+                    puts "Author:" + News.All[articleid].author
+                    puts "=========================================================================================="
                     puts "1. Save Article"
                     puts "2. Return"
                     articleinput = gets.strip
                     if articleinput == '1'
-                        News.All[input.to_i].saveArticle
-                        return
+                        News.All[articleid].saveArticle
+                        viewarticle = 'n'
                     else 
-                        return
+                        viewarticle = 'n'
                     end
                 end
             elsif input.to_i > News.List.count
                 "Please select a valid article number"
-            else
-                puts "Do you want to continue (y/n)"
-                newsContinue = gets.strip
             end
+            puts "Do you want to continue viewing News (y/n)"
+            newsContinue = gets.strip
         end
     end
 
@@ -75,7 +80,9 @@ class Cli
                 puts "=========================================================================================="
                 puts "Select a News article to view details"
                 articleinput = gets.strip.to_i
-                if articleinput <= Article.last.id 
+                if articleinput == 0
+                    return
+                elsif articleinput <= Article.last.id 
                     article = Article.find(articleinput)
                     puts "=========================================================================================="
                     puts "ID# #{article.id}"
@@ -96,7 +103,7 @@ class Cli
                         return
                     end
                 elsif articleinput > Article.List.count 
-                    return
+                    "Please select a valid article number"
                 else
                     return
                 end
@@ -105,17 +112,16 @@ class Cli
                 search = gets.strip
                 result = Article.search(search)
                 puts result
-                #puts "#{result.ids} - #{result.name}"
                 puts "Select a News article to view details"
                 searchselection = gets.strip.to_i
-                if searchselection <= result.count
-                    article = Article.find(searchselection)
+                if searchselection 
+                    articlefound = Article.find(searchselection)
                     puts "=========================================================================================="
-                    puts "ID# #{article.id}"
-                    puts "Title: #{article.name}"
-                    puts "Body: #{article.body}"
-                    puts "URL: #{article.url}"
-                    puts "author: #{article.author}"
+                    puts "ID# #{articlefound.id}"
+                    puts "Title: #{articlefound.name}"
+                    puts "Body: #{articlefound.body}"
+                    puts "URL: #{articlefound.url}"
+                    puts "author: #{articlefound.author}"
                     puts "=========================================================================================="
                     puts "Select an option"
                     puts "1. Return"
@@ -132,7 +138,13 @@ class Cli
                     return
                 end
             end
-
+            puts "Do you want to continue (y/n)"
+            articlesContinue = gets.strip
+            if articlesContinue != 'y' || articlesContinue != 'n'
+                "Please enter y/n"
+            else
+                return
+            end
         end
     end
 end

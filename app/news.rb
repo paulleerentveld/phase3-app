@@ -13,12 +13,12 @@ class News
         @body = body
         @url = url
         @author = author
-        
-        #@@all << self
+        @@all << self
 
     end
 
     def self.GetNews 
+        @@all = []
         url = 'https://newsapi.org/v2/top-headlines?'\
         'country=au&'\
         'apiKey=d864aba1ea3141269c84c167e72e5c24'
@@ -26,16 +26,15 @@ class News
         request = open(url)
         response = request.read
         parsed = JSON(response)
-        parsed['articles'].each.with_index(1) do |article, index|
-            index = News.new(article['title'], article['description'], article['url'], article['author'])
-            @@all << index
+        parsed['articles'].each do |article|
+            News.new(article['title'], article['description'], article['url'], article['author'])
         end
 
     end
 
     def self.List
         @@all.map.with_index do |object, index|
-            "#{index} - #{object.name}"
+            "#{index+1} - #{object.name}"
         end
     end
 
@@ -48,10 +47,6 @@ class News
         @@all
     end
 
-    def showNews
-
-
-    end
 
 
 end
